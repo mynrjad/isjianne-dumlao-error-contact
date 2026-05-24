@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISJIANNE DUMLAO — Drawing & Sketching Atelier</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Cormorant Garamond', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            lightBg: '#FAF6EE',    // Thick, premium textured drawing paper
+                            darkBg: '#0C0C0C',     // Matte charcoal blackboard
+                            graphite: '#2B2B2A',   // Rich graphite pencil
+                            silverLead: '#E3E0D8', // Metallic pencil sheen
+                            accentGold: '#C59B27', // Studio gold ink
+                            accentMuted: '#9E7A1C',
+                        }
+                    },
+                    animation: {
+                        'slow-spin': 'spin 50s linear infinite',
+                        'slow-drift-1': 'driftOne 30s ease-in-out infinite',
+                        'slow-drift-2': 'driftTwo 35s ease-in-out infinite',
+                        'fade-in-up': 'fadeInUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'pulse-slow': 'pulseSlow 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        driftOne: {
+                            '0%, 100%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(40px, -40px) scale(1.1)' },
+                            '66%': { transform: 'translate(-30px, 30px) scale(0.95)' },
+                        },
+                        driftTwo: {
+                            '0%, 100%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '50%': { transform: 'translate(-40px, 50px) scale(1.15)' },
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(35px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        pulseSlow: {
+                            '0%, 100%': { opacity: '0.1' },
+                            '50%': { opacity: '0.3' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Fonts: Cormorant Garamond & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom Style Injection for Premium Textures and Cursor -->
+    <style>
+        ::selection {
+            background-color: rgba(197, 155, 39, 0.2);
+            color: inherit;
+        }
+
+        /* Minimalist Paper Scrollbar */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #1A1A1A;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #E8E4D9;
+        }
+
+        /* Ambient Fine Art Grain Overlay */
+        .sketch-grain {
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.035'/%3E%3C/svg%3E");
+        }
+        .dark .sketch-grain {
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.055'/%3E%3C/svg%3E");
+        }
+
+        /* Drafting Grid Backdrop */
+        .drafting-grid {
+            background-size: 40px 40px;
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0.02) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(0, 0, 0, 0.02) 1px, transparent 1px);
+        }
+        .dark .drafting-grid {
+            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+        }
+
+        /* Glassmorphic paper feel */
+        .art-glass-paper {
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            background-color: rgba(250, 246, 238, 0.75);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        .dark .art-glass-paper {
+            background-color: rgba(12, 12, 12, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Custom sketch-cursor targeting element */
+        #sketch-cursor {
+            pointer-events: none;
+            mix-blend-mode: difference;
+            transition: transform 0.08s ease-out, opacity 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-brand-lightBg dark:bg-brand-darkBg text-brand-graphite dark:text-brand-silverLead font-sans antialiased transition-colors duration-700 min-h-screen flex flex-col overflow-x-hidden relative">
+
+    <!-- Grid and Grain Overlays -->
+    <div class="absolute inset-0 drafting-grid pointer-events-none z-0"></div>
+    <div class="absolute inset-0 sketch-grain pointer-events-none z-10"></div>
+
+    <!-- Soft Ambient Spotlights -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        <div class="absolute -top-60 -left-60 w-[800px] h-[800px] rounded-full bg-yellow-100/10 dark:bg-zinc-900/10 blur-[150px] animate-slow-drift-1"></div>
+        <div class="absolute bottom-1/4 -right-40 w-[600px] h-[600px] rounded-full bg-amber-500/[0.03] dark:bg-yellow-900/[0.03] blur-[130px] animate-slow-drift-2"></div>
+    </div>
+
+    <!-- CUSTOM FLOATING PENCIL RING CURSOR -->
+    <div id="sketch-cursor" class="hidden md:block fixed w-10 h-10 rounded-full border border-brand-accentGold/60 scale-50 opacity-0 z-50">
+        <div class="absolute top-1/2 left-1/2 w-1 h-1 bg-brand-accentGold rounded-full transform -translate-x-1/2 -translate-y-1/2"></div>
+    </div>
+
+    <!-- AUDIO CONTROLS (Toggles Drawing Acoustics) -->
+    <div class="fixed bottom-6 left-6 z-50 flex items-center gap-3">
+        <button onclick="toggleAudio()" id="audio-toggle-btn" class="art-glass-paper hover:border-brand-accentGold p-3.5 rounded-full flex items-center justify-center text-xs text-stone-500 dark:text-stone-400 transition-all duration-300 gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-neutral-400 dark:bg-zinc-600 transition-colors" id="audio-status-dot"></span>
+            <i class="fa-solid fa-microphone-lines" id="audio-status-icon"></i>
+            <span class="hidden sm:inline text-[9px] font-semibold tracking-[0.25em] uppercase">Drawing Acoustics</span>
+        </button>
+    </div>
+
+    <!-- NAVIGATION BAR -->
+    <header class="fixed top-0 left-0 w-full z-40 border-b border-brand-graphite/5 dark:border-brand-silverLead/5 art-glass-paper">
+        <div class="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between">
+            
+            <!-- Atelier Brand Identity -->
+            <a href="#" onclick="switchPage('contact')" class="flex items-center gap-3.5 group relative">
+                <div class="relative w-11 h-11 flex items-center justify-center rounded-full border border-brand-accentGold/20 group-hover:border-brand-accentGold transition-all duration-500">
+                    <span class="font-serif italic text-base text-brand-accentGold group-hover:scale-105 transition-transform duration-300">ID</span>
+                    <div class="absolute inset-0 rounded-full border border-brand-accentGold/0 group-hover:scale-115 group-hover:opacity-10 group-hover:border-brand-accentGold transition-all duration-700"></div>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-serif tracking-[0.4em] text-sm font-semibold uppercase group-hover:text-brand-accentGold transition-colors duration-300">ISJIANNE DUMLAO</span>
+                    <span class="text-[8px] uppercase tracking-[0.45em] text-stone-400 dark:text-stone-500">DRAWING & SKETCHING STUDIO</span>
+                </div>
+            </a>
+
+            <!-- Editorial Nav -->
+            <nav class="hidden md:flex items-center gap-12">
+                <button onclick="switchPage('contact')" id="nav-contact" class="group relative py-2 text-[10px] tracking-[0.3em] uppercase text-brand-accentGold font-medium transition-colors duration-300">
+                    <span class="relative z-10">01 / The Sketchbook (Contact)</span>
+                    <span class="absolute bottom-0 left-0 w-full h-[1px] bg-brand-accentGold transition-transform duration-500 origin-left scale-x-100" id="line-contact"></span>
+                </button>
+                <button onclick="switchPage('error')" id="nav-error" class="group relative py-2 text-[10px] tracking-[0.3em] uppercase text-stone-400 dark:text-stone-500 font-medium transition-colors duration-300 hover:text-brand-accentGold">
+                    <span class="relative z-10">02 / Charcoal Void (404)</span>
+                    <span class="absolute bottom-0 left-0 w-full h-[1px] bg-brand-accentGold transition-transform duration-500 origin-left scale-x-0" id="line-error"></span>
+                </button>
+            </nav>
+
+            <!-- Atmosphere Mode Toggle & Mobile Drawer Icon -->
+            <div class="flex items-center gap-4">
+                <button onclick="toggleTheme(); playDrawingTone(580)" class="w-12 h-12 rounded-full border border-stone-200 dark:border-zinc-800 hover:border-brand-accentGold flex items-center justify-center text-stone-600 dark:text-stone-300 transition-all duration-300" aria-label="Toggle Drawing Medium">
+                    <i id="theme-icon" class="fa-solid fa-pencil text-xs"></i>
+                </button>
+                <button onclick="toggleMobileMenu(); playDrawingTone(460)" class="md:hidden w-12 h-12 rounded-full border border-stone-200 dark:border-zinc-800 hover:border-brand-accentGold flex items-center justify-center text-stone-600 dark:text-stone-300 transition-all duration-300">
+                    <i id="mobile-menu-icon" class="fa-solid fa-bars-staggered text-xs"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Drawer -->
+        <div id="mobile-menu" class="hidden md:hidden absolute top-24 left-0 w-full bg-brand-lightBg/98 dark:bg-brand-darkBg/98 border-b border-brand-graphite/10 dark:border-brand-silverLead/10 py-8 px-8 flex flex-col gap-6 shadow-xl transition-all duration-300">
+            <button onclick="switchPage('contact'); toggleMobileMenu()" class="text-left py-3 text-xs tracking-[0.3em] uppercase font-medium hover:text-brand-accentGold transition-colors duration-300 flex items-center justify-between">
+                <span>01 / The Sketchbook (Contact)</span>
+                <i class="fa-solid fa-pen-fancy text-xs text-brand-accentGold"></i>
+            </button>
+            <button onclick="switchPage('error'); toggleMobileMenu()" class="text-left py-3 text-xs tracking-[0.3em] uppercase font-medium hover:text-brand-accentGold transition-colors duration-300 flex items-center justify-between">
+                <span>02 / Charcoal Void (404)</span>
+                <i class="fa-solid fa-signature text-xs text-brand-accentGold"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- TOAST POPUPS -->
+    <div id="toast-container" class="fixed top-28 right-6 z-50 flex flex-col gap-4 max-w-sm w-full pointer-events-none"></div>
+
+    <!-- MAIN PORTAL CONTAINER -->
+    <main class="flex-grow pt-24 relative flex flex-col justify-center z-10">
+
+        <!-- VIEW 1: CONTACT US & PORTABLE SKETCHPAD -->
+        <section id="page-contact" class="page-view max-w-7xl mx-auto w-full px-6 py-10 md:py-20 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start transition-opacity duration-700 ease-in-out">
+            
+            <!-- Left Side: Editorial Philosophy and Live Sketchbook Widget -->
+            <div class="lg:col-span-5 flex flex-col space-y-10 animate-fade-in-up">
+                <div>
+                    <div class="flex items-center gap-3 mb-5">
+                        <span class="h-[1.5px] w-8 bg-brand-accentGold"></span>
+                        <span class="text-[9px] uppercase tracking-[0.4em] text-brand-accentGold font-semibold">STUDIO INQUIRY CORNER</span>
+                    </div>
+                    
+                    <h1 class="font-serif text-5xl sm:text-6xl text-stone-900 dark:text-white leading-[1.15] mb-6 font-light">
+                        Sketching <br>the lines of <br><span class="italic font-light text-brand-accentGold">collaboration</span>.
+                    </h1>
+                    
+                    <p class="text-stone-500 dark:text-stone-400 leading-relaxed font-light text-sm sm:text-base max-w-md">
+                        This is the digital sketchpad of Isjianne Dumlao. We design through structured lines, gestural layouts, and empty spaces. Leave an outline, trace a plan, or leave us a physical note.
+                    </p>
+                </div>
+
+                <!-- LIVE INTERACTIVE SCRATCHPAD WIDGET -->
+                <div class="border border-stone-200 dark:border-zinc-800 rounded-2xl p-5 bg-white/45 dark:bg-[#0F0F0F]/45 shadow-sm relative overflow-hidden flex flex-col gap-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex flex-col gap-1">
+                            <span class="text-[8px] uppercase tracking-[0.25em] text-stone-400 dark:text-stone-500 font-semibold">
+                                <i class="fa-solid fa-signature mr-1.5 text-brand-accentGold"></i>The Studio Draftboard
+                            </span>
+                            <span class="text-[10px] text-stone-500 dark:text-stone-400 italic font-serif">Scribble a prompt, idea, or sign:</span>
+                        </div>
+                        <button onclick="clearMiniSketchpad(); playDrawingTone(310)" class="text-[9px] uppercase tracking-[0.2em] px-2.5 py-1.5 rounded-md border border-stone-200 dark:border-zinc-800 hover:border-brand-accentGold transition-colors text-stone-400 hover:text-brand-accentGold">
+                            Clear Slate
+                        </button>
+                    </div>
+
+                    <!-- Small Canvas Board -->
+                    <div class="relative w-full aspect-[4/3] rounded-xl border border-stone-100 dark:border-zinc-900 overflow-hidden bg-stone-50/50 dark:bg-black/40 cursor-crosshair">
+                        <canvas id="mini-sketchpad" class="w-full h-full block touch-none"></canvas>
+                        <!-- Overlay Hint -->
+                        <div id="sketchpad-hint" class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-center p-4">
+                            <i class="fa-solid fa-paintbrush text-lg text-stone-300 dark:text-zinc-700 animate-pulse mb-2"></i>
+                            <span class="text-[9px] uppercase tracking-widest text-stone-400 dark:text-zinc-500">Draw a sketch here</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Minimal Details Grid -->
+                <div class="space-y-6 pt-6 border-t border-brand-graphite/5 dark:border-brand-silverLead/5">
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="space-y-1.5">
+                            <span class="text-[9px] uppercase tracking-[0.3em] text-stone-400 dark:text-stone-500 font-medium block">Digital Studio</span>
+                            <a href="mailto:isjianne@dumlaostudio.com" onclick="playDrawingTone(550)" class="text-xs hover:text-brand-accentGold hover:underline decoration-brand-accentGold transition-colors duration-300">isjianne@dumlaostudio.com</a>
+                        </div>
+                        <div class="space-y-1.5">
+                            <span class="text-[9px] uppercase tracking-[0.3em] text-stone-400 dark:text-stone-500 font-medium block">Drawing Coordinates</span>
+                            <p class="text-xs font-light text-stone-500 dark:text-stone-400">Las Piñas, NCR, PH</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Side: Exquisite Sketchbook Inquiry Sheet -->
+            <div class="lg:col-span-7 animate-fade-in-up" style="animation-delay: 0.2s;">
+                <div class="bg-white/80 dark:bg-[#0B0B0B]/90 rounded-2xl p-8 sm:p-12 shadow-xl border border-stone-100 dark:border-zinc-900 relative overflow-hidden art-glass-paper">
+                    
+                    <!-- Form Header -->
+                    <form id="drawingContactForm" onsubmit="handleDrawingFormSubmit(event)" class="relative z-10 space-y-8">
+                        <div>
+                            <h2 class="font-serif text-2xl text-stone-900 dark:text-white font-light tracking-wide mb-1.5">Drafting an Initiative</h2>
+                            <p class="text-[11px] text-stone-400 dark:text-zinc-500 tracking-wider">Please fill in your coordinates to open the transmission lines.</p>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                            <!-- Name Inputs -->
+                            <div class="space-y-2 group relative">
+                                <label for="form-identity" class="text-[9px] uppercase tracking-[0.3em] text-stone-400 dark:text-stone-500 font-medium transition-colors duration-300 group-focus-within:text-brand-accentGold">Your Identity</label>
+                                <input type="text" id="form-identity" required
+                                    class="w-full bg-transparent border-b border-stone-200 dark:border-zinc-800 focus:border-brand-accentGold focus:outline-none py-3 text-xs tracking-wider transition-all duration-300"
+                                    placeholder="your complete signature">
+                            </div>
+                            <!-- Email Inputs -->
+                            <div class="space-y-2 group relative">
+                                <label for="form-coordinate" class="text-[9px] uppercase tracking-[0.3em] text-stone-400 dark:text-stone-500 font-medium transition-colors duration-300 group-focus-within:text-brand-accentGold">Digital Coordinate</label>
+                                <input type="email" id="form-coordinate" required
+                                    class="w-full bg-transparent border-b border-stone-200 dark:border-zinc-800 focus:border-brand-accentGold focus:outline-none py-3 text-xs tracking-wider transition-all duration-300"
+                                    placeholder="identity@realm.com">
+                            </div>
+                        </div>
+
+                        <!-- Sketch Category Vectors -->
+                        <div class="space-y-3">
+                            <label class="text-[9px] uppercase tracking-[0.3em] text-stone-400 dark:text-stone-500 font-medium block">Inquiry Perspective</label>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="drawingSubject" value="conceptual" checked class="peer sr-only">
+                                    <div class="text-[10px] uppercase tracking-[0.15em] text-center border border-stone-200 dark:border-zinc-800/80 peer-checked:border-brand-accentGold peer-checked:text-brand-accentGold peer-checked:bg-brand-accentGold/[0.04] rounded-lg py-3 px-2 transition-all duration-300">
+                                        Conceptual Drawing
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="drawingSubject" value="fineart" class="peer sr-only">
+                                    <div class="text-[10px] uppercase tracking-[0.15em] text-center border border-stone-200 dark:border-zinc-800/80 peer-checked:border-brand-accentGold peer-checked:text-brand-accentGold peer-checked:bg-brand-accentGold/[0.04] rounded-lg py-3 px-2 transition-all duration-300">
+                                        Fine Art Sketching
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="drawingSubject" value="collaboration" class="peer sr-only">
+                                    <div class="text-[10px] uppercase tracking-[0.15em] text-center border border-stone-200 dark:border-zinc-800/80 peer-checked:border-brand-accentGold peer-checked:text-brand-accentGold peer-checked:bg-brand-accentGold/[0.04] rounded-lg py-3 px-2 transition-all duration-300">
+                                        Collaboration
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Conceptual Message -->
+                        <div class="space-y-2 group">
+                            <label for="form-sketch-details" class="text-[9px] uppercase tracking-[0.3em] text-stone-400 dark:text-stone-500 font-medium transition-colors duration-300 group-focus-within:text-brand-accentGold">The Conceptual Specifications</label>
+                            <textarea id="form-sketch-details" required rows="4"
+                                class="w-full bg-transparent border-b border-stone-200 dark:border-zinc-800 focus:border-brand-accentGold focus:outline-none py-3 text-xs tracking-wider transition-all duration-300 resize-none"
+                                placeholder="Describe the horizons of your creative project, sketch elements, or timeline..."></textarea>
+                        </div>
+
+                        <!-- Transmission Button -->
+                        <button type="submit" id="submit-drawing-btn" class="w-full group bg-stone-900 dark:bg-[#FAF9F6] text-[#FAF9F6] dark:text-stone-950 font-medium py-4.5 px-6 rounded-lg text-[10px] uppercase tracking-[0.35em] hover:bg-brand-accentGold dark:hover:bg-brand-accentGold dark:hover:text-white hover:text-white transition-all duration-500 flex items-center justify-center gap-3 shadow-lg">
+                            <span id="btn-drawing-text">Transmit Sketch Sheet</span>
+                            <span class="w-2 h-2 rounded-full bg-brand-accentGold animate-pulse" id="btn-drawing-dot"></span>
+                        </button>
+                    </form>
+
+                    <!-- Form Success Curtain Overlay -->
+                    <div id="drawing-success-curtain" class="hidden absolute inset-0 z-20 bg-brand-lightBg/95 dark:bg-[#080808]/95 flex flex-col items-center justify-center text-center p-8 transition-all duration-700">
+                        <div class="relative w-28 h-28 mb-6 flex items-center justify-center">
+                            <div class="absolute inset-0 rounded-full border border-brand-accentGold/20 animate-slow-spin"></div>
+                            <!-- Minimal drafting compass icon -->
+                            <i class="fa-solid fa-compass-drafting text-3xl text-brand-accentGold"></i>
+                        </div>
+                        <h3 class="font-serif text-3xl text-stone-900 dark:text-white mb-3 font-light italic">Sketch Filed</h3>
+                        <p class="text-stone-500 dark:text-stone-400 text-xs tracking-widest leading-relaxed mb-8 max-w-sm">
+                            Your design parameters and drawing coordinates have been successfully projected. We will refine this outline together shortly.
+                        </p>
+                        <button onclick="resetDrawingForm(); playDrawingTone(410);" class="border border-brand-graphite/10 dark:border-brand-silverLead/10 hover:border-brand-accentGold hover:text-brand-accentGold px-8 py-3.5 rounded-full text-[9px] uppercase tracking-[0.3em] transition-all duration-300 font-medium">
+                            Return to Drawing Board
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 2: THE CHARCOAL VOID (404 ERROR SKETCHPAD) -->
+        <section id="page-error" class="page-view hidden absolute inset-0 w-full min-h-[calc(100vh-6rem)] flex items-center justify-center py-10 px-6 transition-all duration-700 ease-in-out overflow-hidden">
+            <!-- Full Ambient Draw-With-Charcoal Physics Canvas -->
+            <canvas id="charcoal-canvas" class="absolute inset-0 w-full h-full pointer-events-auto opacity-90 dark:opacity-50"></canvas>
+
+            <!-- Floating Gallery Information Node -->
+            <div class="relative z-10 max-w-2xl text-center flex flex-col items-center animate-fade-in-up art-glass-paper p-8 sm:p-12 rounded-3xl">
+                
+                <!-- Massive Architectural Title -->
+                <div class="relative mb-4">
+                    <span class="font-serif italic text-[11rem] sm:text-[14rem] leading-none select-none tracking-tight text-brand-graphite/[0.04] dark:text-brand-silverLead/[0.04] font-light">404</span>
+                    <div class="absolute inset-0 flex flex-col items-center justify-center">
+                        <span class="text-[9px] uppercase tracking-[0.55em] font-semibold text-brand-accentGold">UNSTRUCTURED VOID</span>
+                        <span class="text-[8px] uppercase tracking-[0.3em] text-stone-400 dark:text-zinc-600 mt-2 font-mono">No Outline Found</span>
+                    </div>
+                </div>
+
+                <h2 class="font-serif text-3xl sm:text-4xl text-stone-900 dark:text-white mb-5 font-light">The outline was <span class="italic font-light text-brand-accentGold">lost in the void</span>.</h2>
+                <p class="text-stone-500 dark:text-stone-400 text-xs sm:text-sm leading-relaxed max-w-lg mb-8 font-light tracking-wide">
+                    The requested node coordinates do not exist. Use your mouse, stylus, or touch inputs directly on the background to draw fine charcoal lines, pencil crosshatches, and paint your own conceptual landscape.
+                </p>
+
+                <!-- Action Hub -->
+                <div class="flex flex-col sm:flex-row items-center gap-4">
+                    <button onclick="switchPage('contact'); playDrawingTone(640);" class="bg-stone-900 dark:bg-[#FAF9F6] text-white dark:text-stone-950 px-8 py-4 rounded-full text-[9px] uppercase tracking-[0.3em] hover:bg-brand-accentGold dark:hover:bg-brand-accentGold dark:hover:text-white transition-all duration-300 font-medium">
+                        Return to Atelier Sketchbook
+                    </button>
+                    <button onclick="distortCharcoalDrawing(); playDrawingTone(330);" class="border border-brand-graphite/15 dark:border-brand-silverLead/15 hover:border-brand-accentGold hover:text-brand-accentGold px-8 py-4 rounded-full text-[9px] uppercase tracking-[0.3em] transition-all duration-300">
+                        Shake & Scatter Charcoal
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-brand-graphite/5 dark:border-brand-silverLead/5 bg-brand-lightBg/50 dark:bg-brand-darkBg/50 py-8 transition-colors duration-500 z-10 art-glass-paper">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6 text-[10px] text-stone-400 dark:text-stone-500 tracking-wider">
+            <div class="flex items-center gap-3">
+                <span class="w-1.5 h-1.5 rounded-full bg-brand-accentGold/50 animate-pulse"></span>
+                <p>&copy; 2026 Isjianne Dumlao Drawing Atelier. Built with precision lines and fluid codes.</p>
+            </div>
+            <div class="flex items-center gap-6 font-medium">
+                <a href="#" class="hover:text-brand-accentGold transition-colors duration-300 uppercase">ARCHIVED SKETCHES</a>
+                <span class="text-stone-300 dark:text-zinc-800">|</span>
+                <a href="#" class="hover:text-brand-accentGold transition-colors duration-300 uppercase">GESTURAL ARCHIVE</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- GLOBAL VARIABLES & THEME STATE ---
+        let currentView = 'contact';
+        let audioCtx = null;
+        let isAudioEnabled = false;
+
+        // Interactive graphite pencil/circle cursor logic
+        const customCursor = document.getElementById('sketch-cursor');
+        document.addEventListener('mousemove', (e) => {
+            customCursor.style.transform = `translate3d(${e.clientX - 20}px, ${e.clientY - 20}px, 0)`;
+        });
+
+        document.addEventListener('mouseenter', () => {
+            customCursor.style.opacity = '1';
+        });
+
+        document.addEventListener('mouseleave', () => {
+            customCursor.style.opacity = '0';
+        });
+
+        // Register custom cursor reactive scaling on interactive links/buttons
+        const interactivePoints = document.querySelectorAll('button, a, input, textarea, canvas');
+        interactivePoints.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                customCursor.style.transform += ' scale(1.4)';
+                customCursor.style.borderColor = '#C59B27';
+            });
+            el.addEventListener('mouseleave', () => {
+                customCursor.style.transform = customCursor.style.transform.replace(' scale(1.4)', '');
+                customCursor.style.borderColor = 'rgba(197, 155, 39, 0.6)';
+            });
+        });
+
+        // --- WEB AUDIO DRAWING SYNTHESISER ENGINE ---
+        function toggleAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            
+            isAudioEnabled = !isAudioEnabled;
+            const statusDot = document.getElementById('audio-status-dot');
+            const statusIcon = document.getElementById('audio-status-icon');
+            const buttonEl = document.getElementById('audio-toggle-btn');
+
+            if (isAudioEnabled) {
+                statusDot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse';
+                statusIcon.className = 'fa-solid fa-microphone text-brand-accentGold';
+                buttonEl.classList.add('border-brand-accentGold');
+                showToast('Acoustic Synthesizer Online', 'Sketch acoustics will sound as you draw and explore.', 'info');
+                playIntroChords();
+            } else {
+                statusDot.className = 'w-2.5 h-2.5 rounded-full bg-neutral-400 dark:bg-zinc-600';
+                statusIcon.className = 'fa-solid fa-microphone-lines';
+                buttonEl.classList.remove('border-brand-accentGold');
+                showToast('Acoustics Muted', 'Drawing sound waves are deactivated.', 'info');
+            }
+        }
+
+        function playDrawingTone(frequency, duration = 0.5, type = 'sine', volume = 0.012) {
+            if (!isAudioEnabled || !audioCtx) return;
+            try {
+                const osc = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                
+                osc.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                
+                osc.type = type;
+                osc.frequency.setValueAtTime(frequency, audioCtx.currentTime);
+                
+                // Fine ramp-up and decay curves for sound chimes
+                gainNode.gain.setValueAtTime(volume, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+                
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch (err) {
+                console.error('Tone generation error:', err);
+            }
+        }
+
+        function playIntroChords() {
+            if (!isAudioEnabled || !audioCtx) return;
+            // Pentatonic melody chime sequence
+            const chord = [261.63, 329.63, 392.00, 523.25, 659.25];
+            chord.forEach((freq, idx) => {
+                setTimeout(() => {
+                    playDrawingTone(freq, 0.8, 'triangle', 0.015);
+                }, idx * 120);
+            });
+        }
+
+        // --- STREAMING_CHUNK: Instantiating the Interactive Contact Sketchpad... ---
+        // --- MINI SKETCHPAD (CONTACT PAGE) ---
+        const miniCanvas = document.getElementById('mini-sketchpad');
+        const miniCtx = miniCanvas.getContext('2d');
+        const sketchHint = document.getElementById('sketchpad-hint');
+        let isDrawingMini = false;
+        let lastMiniX = 0;
+        let lastMiniY = 0;
+
+        function initMiniSketchpad() {
+            // Setup drawing settings and resize
+            miniCanvas.width = miniCanvas.parentElement.clientWidth;
+            miniCanvas.height = miniCanvas.parentElement.clientHeight;
+            
+            miniCtx.lineCap = 'round';
+            miniCtx.lineJoin = 'round';
+        }
+
+        function getMiniPointerCoords(e) {
+            const rect = miniCanvas.getBoundingClientRect();
+            let clientX, clientY;
+            
+            if (e.touches && e.touches.length > 0) {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            } else {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+            return {
+                x: clientX - rect.left,
+                y: clientY - rect.top
+            };
+        }
+
+        function startMiniDrawing(e) {
+            isDrawingMini = true;
+            sketchHint.classList.add('opacity-0'); // Hide hint instantly on draw
+            const coords = getMiniPointerCoords(e);
+            lastMiniX = coords.x;
+            lastMiniY = coords.y;
+            playDrawingTone(200 + Math.random() * 300, 0.3, 'sine', 0.01);
+        }
+
+        function drawMiniStroke(e) {
+            if (!isDrawingMini) return;
+            e.preventDefault(); // Stop mobile scrolling during sketching
+            
+            const coords = getMiniPointerCoords(e);
+            
+            miniCtx.beginPath();
+            miniCtx.moveTo(lastMiniX, lastMiniY);
+            miniCtx.lineTo(coords.x, coords.y);
+            
+            // Apply graphite pencil dynamics (varying widths slightly)
+            const isDark = document.documentElement.classList.contains('dark');
+            miniCtx.strokeStyle = isDark ? 'rgba(227, 224, 216, 0.65)' : 'rgba(43, 43, 42, 0.65)';
+            miniCtx.lineWidth = 1.8 + Math.random() * 0.7;
+            miniCtx.stroke();
+            
+            // Modulate pitch dynamically as the user sketches
+            if (Math.random() < 0.1) {
+                const drawPitch = 150 + (coords.y / miniCanvas.height) * 450;
+                playDrawingTone(drawPitch, 0.15, 'sine', 0.008);
+            }
+
+            lastMiniX = coords.x;
+            lastMiniY = coords.y;
+        }
+
+        function stopMiniDrawing() {
+            isDrawingMini = false;
+        }
+
+        function clearMiniSketchpad() {
+            miniCtx.clearRect(0, 0, miniCanvas.width, miniCanvas.height);
+            sketchHint.classList.remove('opacity-0');
+        }
+
+        // Wire Event Listeners for Mini Sketchpad
+        miniCanvas.addEventListener('mousedown', startMiniDrawing);
+        miniCanvas.addEventListener('mousemove', drawMiniStroke);
+        window.addEventListener('mouseup', stopMiniDrawing);
+
+        miniCanvas.addEventListener('touchstart', startMiniDrawing, { passive: false });
+        miniCanvas.addEventListener('touchmove', drawMiniStroke, { passive: false });
+        window.addEventListener('touchend', stopMiniDrawing);
+
+        // --- THEME INTERACTIVE SWITCHER ---
+        if (localStorage.theme === 'light' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+            document.documentElement.classList.remove('dark');
+            updateThemeIndicators(false);
+        } else {
+            document.documentElement.classList.add('dark');
+            updateThemeIndicators(true);
+        }
+
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.theme = isDark ? 'dark' : 'light';
+            updateThemeIndicators(isDark);
+            
+            // Redraw charcoal colors if error canvas is active
+            if (currentView === 'error') {
+                charcoalParticles.forEach(p => p.resetColor());
+            }
+        }
+
+        function updateThemeIndicators(isDark) {
+            const themeIcon = document.getElementById('theme-icon');
+            if (isDark) {
+                themeIcon.className = 'fa-solid fa-paintbrush text-xs text-brand-accentGold';
+            } else {
+                themeIcon.className = 'fa-solid fa-pencil text-xs';
+            }
+        }
+
+        // --- MOBILE DRAWER ACTUATOR ---
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const icon = document.getElementById('mobile-menu-icon');
+            const isHidden = menu.classList.contains('hidden');
+
+            if (isHidden) {
+                menu.classList.remove('hidden');
+                icon.className = 'fa-solid fa-xmark text-xs text-brand-accentGold';
+            } else {
+                menu.classList.add('hidden');
+                icon.className = 'fa-solid fa-bars-staggered text-xs';
+            }
+        }
+
+        // --- STREAMING_CHUNK: Crafting Notification and Toast systems... ---
+        // --- GENERAL FINE NOTIFICATIONS ---
+        function showToast(title, body, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            let colorBorderClass = 'border-l-2 border-brand-accentGold bg-white/95 dark:bg-[#0D0D0D]/95';
+            let iconMarkup = '<i class="fa-solid fa-pencil text-brand-accentGold text-xs mt-1"></i>';
+            
+            if (type === 'success') {
+                colorBorderClass = 'border-l-2 border-emerald-500 bg-white/95 dark:bg-[#0D0D0D]/95';
+                iconMarkup = '<i class="fa-solid fa-compass-drafting text-emerald-500 text-xs mt-1"></i>';
+            } else if (type === 'error') {
+                colorBorderClass = 'border-l-2 border-rose-500 bg-white/95 dark:bg-[#0D0D0D]/95';
+                iconMarkup = '<i class="fa-solid fa-triangle-exclamation text-rose-500 text-xs mt-1"></i>';
+            }
+
+            toast.className = `art-glass-paper p-4 rounded-xl shadow-lg flex gap-3 items-start pointer-events-auto border transition-all duration-300 transform translate-x-12 opacity-0 ${colorBorderClass}`;
+            toast.innerHTML = `
+                ${iconMarkup}
+                <div class="flex-grow space-y-1">
+                    <h4 class="text-[9px] uppercase tracking-[0.2em] font-semibold text-stone-900 dark:text-white">${title}</h4>
+                    <p class="text-stone-500 dark:text-stone-400 text-[10px] leading-relaxed tracking-wider">${body}</p>
+                </div>
+                <button onclick="this.parentElement.remove()" class="text-stone-400 hover:text-brand-accentGold transition-colors text-xs">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            `;
+
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.remove('translate-x-12', 'opacity-0');
+            }, 30);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => { toast.remove(); }, 350);
+            }, 6000);
+        }
+
+        // --- STREAMING_CHUNK: Integrating Page Switching mechanics... ---
+        // --- PAGE TRANSITION & CONTROLLER ---
+        function switchPage(pageId) {
+            const contactSection = document.getElementById('page-contact');
+            const errorSection = document.getElementById('page-error');
+            const navContactBtn = document.getElementById('nav-contact');
+            const navErrorBtn = document.getElementById('nav-error');
+            const lineContact = document.getElementById('line-contact');
+            const lineError = document.getElementById('line-error');
+
+            playDrawingTone(480, 0.4);
+
+            if (pageId === 'contact') {
+                contactSection.classList.remove('hidden');
+                errorSection.classList.add('hidden');
+                
+                navContactBtn.classList.add('text-brand-accentGold');
+                navContactBtn.classList.remove('text-stone-400', 'dark:text-stone-500');
+                navErrorBtn.classList.remove('text-brand-accentGold');
+                navErrorBtn.classList.add('text-stone-400', 'dark:text-stone-500');
+                
+                lineContact.classList.add('scale-x-100');
+                lineContact.classList.remove('scale-x-0');
+                lineError.classList.remove('scale-x-100');
+                lineError.classList.add('scale-x-0');
+
+                stopCharcoalEngine();
+                setTimeout(initMiniSketchpad, 50); // Re-initialize Mini sketch coordinates
+            } else if (pageId === 'error') {
+                contactSection.classList.add('hidden');
+                errorSection.classList.remove('hidden');
+                
+                navErrorBtn.classList.add('text-brand-accentGold');
+                navErrorBtn.classList.remove('text-stone-400', 'dark:text-stone-500');
+                navContactBtn.classList.remove('text-brand-accentGold');
+                navContactBtn.classList.add('text-stone-400', 'dark:text-stone-500');
+
+                lineError.classList.add('scale-x-100');
+                lineError.classList.remove('scale-x-0');
+                lineContact.classList.remove('scale-x-100');
+                lineContact.classList.add('scale-x-0');
+
+                startCharcoalEngine();
+            }
+            currentView = pageId;
+        }
+
+        // --- DRAWING CONTACT FORM SUBMISSION ---
+        function handleDrawingFormSubmit(event) {
+            event.preventDefault();
+
+            const identity = document.getElementById('form-identity');
+            const coordinate = document.getElementById('form-coordinate');
+            const details = document.getElementById('form-sketch-details');
+            const submitBtn = document.getElementById('submit-drawing-btn');
+            const btnText = document.getElementById('btn-drawing-text');
+            const btnDot = document.getElementById('btn-drawing-dot');
+            const successCurtain = document.getElementById('drawing-success-curtain');
+
+            if (!identity.value.trim() || !coordinate.value.trim() || !details.value.trim()) {
+                showToast('Drafting Warning', 'Missing specifications on your drawing board. Complete the sheet.', 'error');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            btnText.innerText = "Projecting Lines...";
+            btnDot.className = "fa-solid fa-spinner animate-spin text-brand-accentGold";
+
+            // Orchestrated drawing sweeps sounds
+            playDrawingTone(260, 0.2);
+            setTimeout(() => playDrawingTone(390, 0.2), 200);
+            setTimeout(() => playDrawingTone(520, 0.3), 400);
+
+            setTimeout(() => {
+                submitBtn.disabled = false;
+                btnText.innerText = "Transmit Sketch Sheet";
+                btnDot.className = "w-2 h-2 rounded-full bg-brand-accentGold animate-pulse";
+
+                successCurtain.classList.remove('hidden');
+                showToast('Transmission Complete', 'Your drawing concept is safely stored in Isjianne Dumlao\'s desk.', 'success');
+                
+                // Final happy sound trigger
+                setTimeout(() => {
+                    playIntroChords();
+                }, 100);
+            }, 1800);
+        }
+
+        function resetDrawingForm() {
+            document.getElementById('drawingContactForm').reset();
+            clearMiniSketchpad();
+            const successCurtain = document.getElementById('drawing-success-curtain');
+            successCurtain.classList.add('hidden');
+        }
+
+
+        // --- STREAMING_CHUNK: Coding the charcoal void simulation particles... ---
+        // --- CHARCOAL DRAWING PHYSICAL VOID SIMULATION (404 PAGE BACKGROUND) ---
+        const canvas = document.getElementById('charcoal-canvas');
+        const ctx = canvas.getContext('2d');
+        let charcoalAnimationId;
+        let charcoalParticles = [];
+        let maxCharcoalDust = 150;
+        let drawingPointer = { x: null, y: null, active: false, px: null, py: null };
+
+        class CharcoalDuster {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.px = this.x;
+                this.py = this.y;
+                
+                // Set parameters mimicking soft charcoal debris drifting
+                this.speed = Math.random() * 0.8 + 0.2;
+                this.angle = Math.random() * Math.PI * 2;
+                this.angularShift = (Math.random() - 0.5) * 0.04;
+                this.longevity = Math.random() * 250 + 100;
+                this.maxLongevity = this.longevity;
+                
+                // Dynamic lead hardness weight
+                this.leadGrade = Math.random() * 3 + 1; 
+                this.resetColor();
+            }
+
+            resetColor() {
+                const isDark = document.documentElement.classList.contains('dark');
+                // Charcoal graphite color palettes
+                if (isDark) {
+                    const palettes = [
+                        'rgba(227, 224, 216, ', // Silver Lead
+                        'rgba(197, 155, 39, ',  // Studio Gold Ink
+                        'rgba(135, 132, 125, ', // Dusty Charcoal Slate
+                    ];
+                    this.baseColor = palettes[Math.floor(Math.random() * palettes.length)];
+                } else {
+                    const palettes = [
+                        'rgba(43, 43, 42, ',    // Matte Graphite
+                        'rgba(197, 155, 39, ',  // Studio Gold Ink
+                        'rgba(150, 145, 135, ', // Grey Lead Dust
+                    ];
+                    this.baseColor = palettes[Math.floor(Math.random() * palettes.length)];
+                }
+            }
+
+            update() {
+                this.px = this.x;
+                this.py = this.y;
+
+                // Organic paper drag / drift pathing
+                const waveField = Math.cos(this.x * 0.003) * Math.sin(this.y * 0.003) * Math.PI;
+                this.angle += this.angularShift + waveField * 0.015;
+
+                this.x += Math.cos(this.angle) * this.speed;
+                this.y += Math.sin(this.angle) * this.speed;
+
+                // Pointer Drawing Gravity
+                if (drawingPointer.active && drawingPointer.x !== null) {
+                    const dx = drawingPointer.x - this.x;
+                    const dy = drawingPointer.y - this.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < 200) {
+                        // Drawing attraction field pulls charcoal particles to line paths
+                        const pullAngle = Math.atan2(dy, dx);
+                        this.angle += (pullAngle - this.angle) * 0.1;
+                        this.speed = Math.min(this.speed + 0.25, 2.8);
+                    }
+                } else {
+                    this.speed = Math.max(this.speed - 0.04, 0.4);
+                }
+
+                this.longevity--;
+
+                if (this.longevity <= 0 || this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) {
+                    this.reset();
+                }
+            }
+
+            draw() {
+                const alpha = Math.sin((this.longevity / this.maxLongevity) * Math.PI) * 0.16;
+                ctx.strokeStyle = this.baseColor + alpha + ')';
+                ctx.lineWidth = this.leadGrade;
+                ctx.beginPath();
+                ctx.moveTo(this.px, this.py);
+                ctx.lineTo(this.x, this.y);
+                ctx.stroke();
+            }
+        }
+
+        // --- STREAMING_CHUNK: Binding drawing events to canvas... ---
+        // Pointer Coordination Map
+        function getCanvasPointerCoords(e) {
+            const rect = canvas.getBoundingClientRect();
+            let x, y;
+            if (e.touches && e.touches.length > 0) {
+                x = e.touches[0].clientX - rect.left;
+                y = e.touches[0].clientY - rect.top;
+            } else {
+                x = e.clientX - rect.left;
+                y = e.clientY - rect.top;
+            }
+            return { x, y };
+        }
+
+        function triggerStartDrawing(e) {
+            drawingPointer.active = true;
+            const p = getCanvasPointerCoords(e);
+            drawingPointer.x = p.x;
+            drawingPointer.y = p.y;
+            playDrawingTone(190 + Math.random() * 200, 0.4, 'sine', 0.015);
+        }
+
+        function triggerMoveStroke(e) {
+            const p = getCanvasPointerCoords(e);
+            drawingPointer.x = p.x;
+            drawingPointer.y = p.y;
+            
+            if (drawingPointer.active && Math.random() < 0.2) {
+                const pitch = 220 + ((canvas.height - p.y) / canvas.height) * 440;
+                playDrawingTone(pitch, 0.2, 'sine', 0.007);
+            }
+        }
+
+        canvas.addEventListener('mousedown', triggerStartDrawing);
+        canvas.addEventListener('touchstart', triggerStartDrawing, { passive: true });
+
+        canvas.addEventListener('mousemove', triggerMoveStroke);
+        canvas.addEventListener('touchmove', triggerMoveStroke, { passive: true });
+
+        canvas.addEventListener('mouseup', () => drawingPointer.active = false);
+        canvas.addEventListener('touchend', () => drawingPointer.active = false);
+        
+        canvas.addEventListener('mouseleave', () => {
+            drawingPointer.x = null;
+            drawingPointer.y = null;
+            drawingPointer.active = false;
+        });
+
+        // Setup the Simulation Engine particles
+        function initCharcoalDrawingSystem() {
+            charcoalParticles = [];
+            for (let i = 0; i < maxCharcoalDust; i++) {
+                charcoalParticles.push(new CharcoalDuster());
+            }
+        }
+
+        function drawCharcoalLoop() {
+            const isDark = document.documentElement.classList.contains('dark');
+            
+            // Subtle fade simulation mimicking layered sketches on paper
+            ctx.fillStyle = isDark ? 'rgba(12, 12, 12, 0.07)' : 'rgba(250, 246, 238, 0.07)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            for (let i = 0; i < charcoalParticles.length; i++) {
+                charcoalParticles[i].update();
+                charcoalParticles[i].draw();
+            }
+
+            charcoalAnimationId = requestAnimationFrame(drawCharcoalLoop);
+        }
+
+        function startCharcoalEngine() {
+            resizeCharcoalCanvas();
+            initCharcoalDrawingSystem();
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawCharcoalLoop();
+        }
+
+        function stopCharcoalEngine() {
+            if (charcoalAnimationId) {
+                cancelAnimationFrame(charcoalAnimationId);
+            }
+        }
+
+        // Action scatter trigger: distorts drawings dynamically
+        function distortCharcoalDrawing() {
+            for (let i = 0; i < charcoalParticles.length; i++) {
+                const scatterPower = Math.random() * 220 + 80;
+                const scatterAngle = Math.random() * Math.PI * 2;
+                charcoalParticles[i].x += Math.cos(scatterAngle) * scatterPower;
+                charcoalParticles[i].y += Math.sin(scatterAngle) * scatterPower;
+                charcoalParticles[i].longevity = Math.random() * 120 + 40;
+            }
+            showToast('Slate Shaken', 'The graphite dust traces have scattered organically across the board.', 'info');
+        }
+
+        function resizeCharcoalCanvas() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+        }
+
+        window.addEventListener('resize', () => {
+            if (currentView === 'error') {
+                resizeCharcoalCanvas();
+                initCharcoalDrawingSystem();
+            } else if (currentView === 'contact') {
+                initMiniSketchpad();
+            }
+        });
+
+        // Initialize setup state on windows load
+        window.onload = function() {
+            switchPage('contact');
+            initMiniSketchpad();
+        };
+    </script>
+</body>
+</html>
